@@ -1,31 +1,22 @@
-<body>
-  <h1>C# Web Playground</h1>
-  <textarea id="codeInput" rows="15" cols="80">// Write your C# code here
-Console.WriteLine("Hello from the browser!");
+@page "/"
+
+<h1>C# Web Playground</h1>
+
+<textarea @bind="UserCode" rows="15" cols="80">// Write your C# code here
+Console.WriteLine("Hello, Blazor!");
 </textarea>
-  <br />
-  <button onclick="runCode()">Run Code</button>
-  <pre id="output"></pre>
 
-  <script>
-    async function runCode() {
-      const code = document.getElementById("codeInput").value;
-      const output = await DotNet.invokeMethodAsync("CSharpTest.Wasm", "RunCSharpCode", code);
-      document.getElementById("output").innerText = output;
-    }
-  </script>
-</body>
+<br />
 
+<button @onclick="RunCode">Run Code</button>
 
-using Microsoft.JSInterop;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
-using System.IO;
+<pre>@Output</pre>
 
-public partial class Program
-{
-    [JSInvokable("RunCSharpCode")]
-    public static async Task<string> RunCSharpCode(string code)
+@code {
+    private string UserCode = @"Console.WriteLine(""Hello, Blazor!"");";
+    private string Output = "";
+
+    private async Task RunCode()
     {
         var writer = new StringWriter();
         var originalOut = Console.Out;
@@ -33,9 +24,9 @@ public partial class Program
 
         try
         {
-            await CSharpScript.EvaluateAsync(code, ScriptOptions.Default
-                .WithImports("System", "System.Linq", "System.Collections.Generic")
-            );
+            await Microsoft.CodeAnalysis.CSharp.Scripting.CSharpScript.EvaluateAsync(UserCode,
+                Microsoft.CodeAnalysis.Scripting.ScriptOptions.Default
+                .WithImports("System", "System.Linq", "System.Collections.Generic"));
         }
         catch (Exception ex)
         {
@@ -46,9 +37,6 @@ public partial class Program
             Console.SetOut(originalOut);
         }
 
-        return writer.ToString();
+        Output = writer.ToString();
     }
 }
-
-
-dotnet add package Microsoft.CodeAnalysis.CSharp.Scripting --version 4.8.0
