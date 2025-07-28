@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "rtgVEasKQ1A=",
+  "success": false,
+  "projectFilePath": "C:\\Users\\Josh\\desktop\\WebExamTest\\Snippets\\Snippets.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "Unable to load the service index for source https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json.\r\n  Response status code does not indicate success: 403 (This request is not authorized to perform this operation.).",
+      "libraryId": "System.CommandLine.DragonFruit"
+    }
+  ]
+}
